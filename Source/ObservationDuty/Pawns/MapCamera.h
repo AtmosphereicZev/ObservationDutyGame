@@ -12,6 +12,8 @@ class UInputAction;
 class UInputMappingContext;
 class UCameraComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCameraChanged);
+
 UCLASS()
 class OBSERVATIONDUTY_API AMapCamera : public APawn
 {
@@ -33,16 +35,16 @@ class OBSERVATIONDUTY_API AMapCamera : public APawn
 public:
 	AMapCamera();
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-protected:
-	virtual void BeginPlay() override;
-
+	
 	/* ///////////////////////////////////////////////////////
 	 *					   Input Functions
 	 * //////////////////////////////////////////////////////*/	
 
-	void NextCameraFunction(const FInputActionValue& Value);
-	void PreviousCameraFunction(const FInputActionValue& Value);
+	void NextCameraFunction();
+	void PreviousCameraFunction();
+
+protected:
+	virtual void BeginPlay() override;
 	
 private:
 

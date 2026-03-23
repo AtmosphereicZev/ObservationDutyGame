@@ -54,16 +54,14 @@ void AMapCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	}
 }
 
-void AMapCamera::NextCameraFunction(const FInputActionValue& Value)
+void AMapCamera::NextCameraFunction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Next Camera"))
 	AMapCamera* NextCameraActor = GameState->GetNextCamera(this);
 	GetController()->Possess(NextCameraActor);
 }
 
-void AMapCamera::PreviousCameraFunction(const FInputActionValue& Value)
+void AMapCamera::PreviousCameraFunction()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Back Camera"))
 	AMapCamera* PreviousCameraActor = GameState->GetPreviousCamera(this);
 	GetController()->Possess(PreviousCameraActor);
 }
