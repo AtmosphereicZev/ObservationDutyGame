@@ -1,19 +1,19 @@
 ﻿// 
 
 
-#include "AnomalyActor.h"
+#include "AnomalyComponent.h"
 #include "ObservationDuty/Structs/AnomalyStruct.h"
+#include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 
 
-AAnomalyActor::AAnomalyActor()
+UAnomalyComponent::UAnomalyComponent()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = false;
 
-	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	SetRootComponent(Root);
 }
 
-void AAnomalyActor::BeginPlay()
+
+void UAnomalyComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -24,3 +24,4 @@ void AAnomalyActor::BeginPlay()
 
 	GameState->RegisterAnomalies(SpawnableAnomalies, this);
 }
+

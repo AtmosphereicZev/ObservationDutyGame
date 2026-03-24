@@ -4,7 +4,7 @@
 #include "ODMainGameState.h"
 
 #include "Kismet/GameplayStatics.h"
-#include "ObservationDuty/Actors/Anomalies/Anomalies.h"
+#include "ObservationDuty/Components/AnomalyComponent/AnomalyComponent.h"
 #include "ObservationDuty/Pawns/MapCamera.h"
 #include "ObservationDuty/Structs/AnomalyStruct.h"
 
@@ -129,9 +129,9 @@ void AODMainGameState::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camer
 	}
 }
 
-void AODMainGameState::RegisterAnomalies(TArray<FAnomaly> Anomalies, AAnomalyActor* AssociatedActor)
+void AODMainGameState::RegisterAnomalies(TArray<FAnomaly> Anomalies, UAnomalyComponent* AssociatedActor)
 {
-	UE_LOG(LogTemp, Display, TEXT("Registering Anomalies for %s"), *AssociatedActor->GetActorNameOrLabel())
+	UE_LOG(LogTemp, Display, TEXT("Registering Anomalies for %s"), *AssociatedActor->GetOwner()->GetActorNameOrLabel())
 	for (FAnomaly& Anomaly : Anomalies)
 	{
 		UE_LOG(LogTemp, Display, TEXT("Registering Anomaly: %s"), *Anomaly.AnomalyName)

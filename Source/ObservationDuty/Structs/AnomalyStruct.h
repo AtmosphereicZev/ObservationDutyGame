@@ -9,7 +9,6 @@
 #include "AnomalyStruct.generated.h"
 
 class AMapCamera;
-class AAnomalyActor;
 
 USTRUCT()
 struct FAnomaly
@@ -23,6 +22,6 @@ struct FAnomaly
 	UPROPERTY(EditAnywhere)
 	AMapCamera* AssociatedCamera;
 	UPROPERTY()
-	AAnomalyActor* AssociatedActor;
+	UAnomalyComponent* AssociatedActor;
 	FAnomalyDelegate AnomalyEvent;
 };

@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "ObservationDuty/Actors/Anomalies/Anomalies.h"
+#include "ObservationDuty/Anomalies/Anomalies.h"
 #include "ObservationDuty/Enums/EAnomalyTypes.h"
 #include "ODMainGameState.generated.h"
 
+class UAnomalyComponent;
 struct FAnomaly;
 class AMapCamera;
-class AAnomalyActor;
 /**
  * 
  */
 
-DECLARE_DELEGATE_TwoParams(FAnomalyDelegate, AAnomalyActor*, bool);
+DECLARE_DELEGATE_TwoParams(FAnomalyDelegate, UAnomalyComponent*, bool);
 
 UCLASS()
 class OBSERVATIONDUTY_API AODMainGameState : public AGameStateBase
@@ -49,7 +49,7 @@ public:
 	 * @param AssociatedActor The AnomalyActor associated with the anomalies
 	 */
 	UFUNCTION()
-	void RegisterAnomalies(TArray<FAnomaly> Anomalies, AAnomalyActor* AssociatedActor);
+	void RegisterAnomalies(TArray<FAnomaly> Anomalies, UAnomalyComponent* AssociatedActor);
 	/**
 	 * Spawns a random anomaly
 	 * @note This can be called within the editor.

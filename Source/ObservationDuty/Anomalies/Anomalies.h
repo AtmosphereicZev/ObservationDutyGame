@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ObservationDuty/Actors/AnomalyActor.h"
 #include "UObject/Object.h"
 #include "Anomalies.generated.h"
 
+class UAnomalyComponent;
 /**
  * 
  */
@@ -26,7 +26,7 @@ public:
 
 	// Functions
 	UFUNCTION()
-	static void MoveObject(AAnomalyActor* Actor, bool bState);
+	static void MoveObject(UAnomalyComponent* Actor, bool bState);
 	
 protected:
 

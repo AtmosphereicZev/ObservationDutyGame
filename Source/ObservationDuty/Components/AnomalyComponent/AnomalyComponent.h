@@ -3,23 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "AnomalyActor.generated.h"
+#include "Components/ActorComponent.h"
+#include "AnomalyComponent.generated.h"
 
-struct FAnomaly;
+
 class AODMainGameState;
+struct FAnomaly;
 
-UCLASS()
-class OBSERVATIONDUTY_API AAnomalyActor : public AActor
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class OBSERVATIONDUTY_API UAnomalyComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
-	AAnomalyActor();
-
-	// Actor Root Component
-	UPROPERTY(EditAnywhere)
-	USceneComponent* Root;
+	UAnomalyComponent();
 
 	/* ///////////////////////////////////////////////////////
 	 *					 Public Properties
@@ -30,12 +27,8 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
-	
-private:
 
-	/* ///////////////////////////////////////////////////////
-	 *					 Private Properties
-	 * //////////////////////////////////////////////////////*/	
+private:
 
 	UPROPERTY()
 	AODMainGameState* GameState;
