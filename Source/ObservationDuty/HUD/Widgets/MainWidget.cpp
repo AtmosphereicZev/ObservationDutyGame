@@ -81,7 +81,7 @@ void UMainWidget::OnReportButtonClicked()
 void UMainWidget::ReportAnomaly(EAnomalyType AnomalyType)
 {
 	HUD->ReportAnomaly(AnomalyType);
-	RA_ReportButton->SetIsEnabled(true);
+	RA_ReportButton->SetIsEnabled(false);
 	TArray<UWidget*> SelectionBoxes = RA_SB->GetAllChildren();
 	for (UWidget* SelectionBox : SelectionBoxes)
 	{
