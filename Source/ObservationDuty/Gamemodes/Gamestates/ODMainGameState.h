@@ -15,7 +15,7 @@ class AMapCamera;
  * 
  */
 
-DECLARE_DELEGATE_TwoParams(FAnomalyDelegate, UAnomalyComponent*, bool);
+DECLARE_DELEGATE_ThreeParams(FAnomalyDelegate, UAnomalyComponent*, TArray<AActor*>, bool);
 
 UCLASS()
 class OBSERVATIONDUTY_API AODMainGameState : public AGameStateBase
@@ -69,6 +69,13 @@ public:
 
 	UFUNCTION()
 	TArray<FAnomalyTypes> GetAnomalyTypes(){return AnomalyTypes;}
+
+	/* ///////////////////////////////////////////////////////
+	 *					  Public Properties
+	 * //////////////////////////////////////////////////////*/
+
+	UPROPERTY()
+	AMapCamera* CurrentlyControlledCamera;
 	
 protected:
 
@@ -80,6 +87,19 @@ protected:
 	TArray<FAnomaly> AvailableAnomalies;
 	/* Active Anomalies, once reported will return to Available anomalies */
 	TArray<FAnomaly> ActiveAnomalies;
+
+	/* ///////////////////////////////////////////////////////
+	 *					 Protected Functions
+	 * //////////////////////////////////////////////////////*/			
+
+	UFUNCTION()
+	void GameEnd();
+	UFUNCTION()
+	void GameLost();
+	UFUNCTION()
+	void EndPrepPhase();
+	UFUNCTION()
+	void CheckAnomalyCount();
 	
 private:
 
@@ -87,13 +107,23 @@ private:
 	 *					 Private Properties
 	 * //////////////////////////////////////////////////////*/		
 
+	// Game timer that starts at the beginning of the game, lasts 13 minutes and gets
+	// cleared when losing.
+	UPROPERTY()
+	FTimerHandle GameTimer;
+	// Handle that spawns anomalies every minute
+	// NOTE - Isn't used until 3 minutes after the game starts.
+	UPROPERTY()
+	FTimerHandle AnomalyTimer;
+	
 	UPROPERTY()
 	TArray<AMapCamera*> MapCameras;
 	TSubclassOf<AMapCamera> MapCameraClass;
 
 	/* Associated Functions for each anomaly by name. */
 	TMap<FString, FAnomalyDelegate> AnomalyFunctions = {
-		{"Move", FAnomalyDelegate::CreateStatic(&UAnomalies::MoveObject)}
+		{"Move", FAnomalyDelegate::CreateStatic(&UAnomalies::MoveObject)},
+		{"Vanish", FAnomalyDelegate::CreateStatic(&UAnomalies::Vanish)}
 	};
 
 	/* Full String Names of each anomaly. (Mainly used for the HUD) */

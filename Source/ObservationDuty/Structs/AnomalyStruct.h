@@ -21,6 +21,8 @@ struct FAnomaly
 	TEnumAsByte<EAnomalyType> AnomalyType;
 	UPROPERTY(EditAnywhere)
 	AMapCamera* AssociatedCamera;
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> AssociatedActors;
 	UPROPERTY()
 	UAnomalyComponent* AssociatedActor;
 	FAnomalyDelegate AnomalyEvent;

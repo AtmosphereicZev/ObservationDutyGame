@@ -24,7 +24,6 @@ AODMainGameState::AODMainGameState()
 void AODMainGameState::BeginPlay()
 {
 	Super::BeginPlay();
-	
 	TArray<AActor*> FoundCameras;
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), MapCameraClass, FoundCameras);
 	for (AActor* Actor : FoundCameras)
@@ -34,6 +33,19 @@ void AODMainGameState::BeginPlay()
 			MapCameras.Add(CameraActor);
 		}
 	}
+
+	// 13-Minute Game Timer.
+	FTimerDelegate GameTimerDelegate;
+	GameTimerDelegate.BindUFunction(this, "GameEnd");
+	// 780 = 13 minutes.
+	GetWorldTimerManager().SetTimer(GameTimer, GameTimerDelegate, 780.0f, false);
+
+	// Prep Phase - giving the player 3 minutes to memorize the map before anomalies start
+	// spawning every minute.
+	FTimerHandle PrepPhaseHandle;
+	FTimerDelegate PrepPhaseDelegate;
+	PrepPhaseDelegate.BindUFunction(this, "EndPrepPhase");
+	GetWorldTimerManager().SetTimer(PrepPhaseHandle, PrepPhaseDelegate, 180.0f, false);
 }
 
 AMapCamera* AODMainGameState::GetNextCamera(AMapCamera* CurrentCamera)
@@ -77,35 +89,50 @@ AMapCamera* AODMainGameState::GetPreviousCamera(AMapCamera* CurrentCamera)
 
 void AODMainGameState::SpawnAnomaly()
 {
-	if (AvailableAnomalies.Num() == 0) {UE_LOG(LogTemp, Warning, TEXT("No Anomalies")) return;};
+	if (AvailableAnomalies.Num() == 0) {UE_LOG(LogTemp, Warning, TEXT("No Anomalies")) return;}
 	if (AvailableAnomalies.Num() > 1)
 	{
-		int32 randNum = FMath::RandRange(0, AvailableAnomalies.Num() - 1);
-		UE_LOG(LogTemp, Warning, TEXT("Spawning %d"), randNum);
-		bool bound = AvailableAnomalies[randNum].AnomalyEvent.ExecuteIfBound(AvailableAnomalies[randNum].AssociatedActor, true);
-		if (!bound)
+		// Anomalies that aren't on the active camera.
+		TArray<FAnomaly> ValidAnomalies;
+		for (int i = 0; i < AvailableAnomalies.Num(); i++)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("EVENT NOT BOUND!"));
+			if (AvailableAnomalies[i].AssociatedCamera != CurrentlyControlledCamera)
+			{
+				ValidAnomalies.Add(AvailableAnomalies[i]);
+			}
+		}
+		if (ValidAnomalies.Num() == 0) return;
+		if (ValidAnomalies.Num() > 1)
+		{
+			int32 randNum = FMath::RandRange(0, ValidAnomalies.Num() - 1);
+			bool bound = ValidAnomalies[randNum].AnomalyEvent.ExecuteIfBound(ValidAnomalies[randNum].AssociatedActor, ValidAnomalies[randNum].AssociatedActors, true);
+			UE_LOG(LogTemp, Warning, TEXT("Spawning Anomaly"));
+			if (!bound)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("EVENT NOT BOUND!"));
+			}
+			else
+			{
+				for (int i = 0; i < AvailableAnomalies.Num(); i++)
+				{
+					if (AvailableAnomalies[i].AnomalyName == ValidAnomalies[randNum].AnomalyName && AvailableAnomalies[i].AssociatedActor == ValidAnomalies[randNum].AssociatedActor)
+					{
+						ActiveAnomalies.Add(AvailableAnomalies[i]);
+						AvailableAnomalies.RemoveAt(i);
+						CheckAnomalyCount();
+						return;
+					}
+				}
+			}
 		}
 		else
 		{
-			ActiveAnomalies.Add(AvailableAnomalies[randNum]);
-			AvailableAnomalies.RemoveAt(randNum);
+			UE_LOG(LogTemp, Warning, TEXT("There are no more then 1 valid anomaly to spawn"));
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawning 0"));
-		bool bound = AvailableAnomalies[0].AnomalyEvent.ExecuteIfBound(AvailableAnomalies[0].AssociatedActor, true);
-		if (!bound)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("EVENT NOT BOUND!"));
-		}
-		else
-		{
-			ActiveAnomalies.Add(AvailableAnomalies[0]);
-			AvailableAnomalies.RemoveAt(0);
-		}
+		UE_LOG(LogTemp, Warning, TEXT("There are not enough anomalies registered to spawn a random one, please add more in your map!"))
 	}
 }
 
@@ -115,7 +142,7 @@ void AODMainGameState::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camer
 	{
 		if (AnomalyType == ActiveAnomalies[i].AnomalyType && Camera == ActiveAnomalies[i].AssociatedCamera)
 		{
-			bool bound = ActiveAnomalies[i].AnomalyEvent.ExecuteIfBound(ActiveAnomalies[i].AssociatedActor, false);
+			bool bound = ActiveAnomalies[i].AnomalyEvent.ExecuteIfBound(ActiveAnomalies[i].AssociatedActor, ActiveAnomalies[i].AssociatedActors, false);
 			if (!bound)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("EVENT NOT BOUND!"));
@@ -126,6 +153,36 @@ void AODMainGameState::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camer
 				ActiveAnomalies.RemoveAt(i);
 			}
 		}
+	}
+}
+
+void AODMainGameState::GameEnd()
+{
+	// Implement Ending Code.
+	UE_LOG(LogTemp, Warning, TEXT("Game End"))
+}
+
+void AODMainGameState::GameLost()
+{
+	// Implement Losing Code.
+	UE_LOG(LogTemp, Warning, TEXT("Game Lost"))
+}
+
+void AODMainGameState::EndPrepPhase()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Prep Phrase Over - Spawning Anomaly"));
+	SpawnAnomaly();
+	FTimerDelegate AnomalyDelegate;
+	AnomalyDelegate.BindUFunction(this, FName("SpawnAnomaly"));
+	GetWorldTimerManager().SetTimer(AnomalyTimer, AnomalyDelegate, 60.0f, true);
+	CheckAnomalyCount();
+}
+
+void AODMainGameState::CheckAnomalyCount()
+{
+	if (ActiveAnomalies.Num() >= 5)
+	{
+		GameLost();
 	}
 }
 

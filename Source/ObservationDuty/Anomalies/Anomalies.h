@@ -26,7 +26,10 @@ public:
 
 	// Functions
 	UFUNCTION()
-	static void MoveObject(UAnomalyComponent* Actor, bool bState);
+	static void MoveObject(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void Vanish(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	
 	
 protected:
 

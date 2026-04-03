@@ -16,6 +16,8 @@ class OBSERVATIONDUTY_API AODPlayerController : public APlayerController
 
 protected:
 	virtual void BeginPlay() override;
-	
+
+	UFUNCTION()
+	virtual void OnCameraChanged(APawn* UnPossessedPawn, APawn* NewPossessedPawn);
 	
 };
