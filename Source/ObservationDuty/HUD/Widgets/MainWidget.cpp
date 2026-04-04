@@ -6,6 +6,7 @@
 #include "AnomalySelectionBox.h"
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
+#include "Components/TextBlock.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 #include "ObservationDuty/HUD/ODHUD.h"
 
@@ -31,6 +32,11 @@ void UMainWidget::SetupWidget()
 			RA_SB->AddChild(NewSelectionBox);
 		}
 	}
+}
+
+void UMainWidget::SetCameraText(FString Name)
+{
+	CameraName->SetText(FText::FromString(Name));
 }
 
 void UMainWidget::OnSelectionBoxClicked(UAnomalySelectionBox* BoxClicked)

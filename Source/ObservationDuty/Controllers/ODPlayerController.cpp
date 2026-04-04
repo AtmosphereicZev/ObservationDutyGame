@@ -4,6 +4,7 @@
 #include "ODPlayerController.h"
 
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
+#include "ObservationDuty/HUD/ODHUD.h"
 #include "ObservationDuty/Pawns/MapCamera.h"
 
 void AODPlayerController::BeginPlay()
@@ -21,6 +22,10 @@ void AODPlayerController::OnCameraChanged(APawn* UnPossessedPawn, APawn* NewPoss
 		if (AMapCamera* Camera = Cast<AMapCamera>(NewPossessedPawn))
 		{
 			GameState->CurrentlyControlledCamera = Camera;
+			if (AODHUD* HUD = GetHUD<AODHUD>())
+			{
+				HUD->GetMainWidget()->SetCameraText(Camera->CameraName);
+			}
 		}
 	}
 }

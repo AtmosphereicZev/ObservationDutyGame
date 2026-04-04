@@ -40,6 +40,8 @@ public:
 	UTextBlock* NC_TXT;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* PC_TXT;
+	UPROPERTY(meta=(BindWidget))
+	UTextBlock* CameraName;
 	
 	// Report Anomalies Box
 	UPROPERTY(meta=(BindWidget))
@@ -82,6 +84,8 @@ public:
 	virtual void NativeConstruct() override;
 	UFUNCTION()
 	void SetupWidget();
+	UFUNCTION()
+	void SetCameraText(FString Name);
 	UFUNCTION()
 	void OnSelectionBoxClicked(UAnomalySelectionBox* BoxClicked);
 	UFUNCTION()

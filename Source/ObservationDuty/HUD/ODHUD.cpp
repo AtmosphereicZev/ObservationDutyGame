@@ -3,6 +3,7 @@
 
 #include "ODHUD.h"
 
+#include "ObservationDuty/Controllers/ODPlayerController.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 #include "ObservationDuty/Pawns/MapCamera.h"
 
@@ -27,6 +28,17 @@ void AODHUD::BeginPlay()
 		ActiveMainWidget->AnomalySelectionBoxClass = AnomalySelectionBoxClass;
 		ActiveMainWidget->HUD = this;
 		ActiveMainWidget->SetupWidget();
+		if (AODPlayerController* Controller = Cast<AODPlayerController>(GetOwningPlayerController()))
+		{
+			if (AMapCamera* StartingCamera = Controller->GetPawn<AMapCamera>())
+			{
+				ActiveMainWidget->SetCameraText(StartingCamera->CameraName);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Could not get Starting Camera on HUD Startup, Camera Text will appear broken until camera is changed."))
+			}
+		}
 		ActiveMainWidget->AddToViewport();
 		GetOwningPlayerController()->OnPossessedPawnChanged.AddDynamic(ActiveMainWidget, &UMainWidget::UnselectAnomalySelection);
 	}

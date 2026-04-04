@@ -43,6 +43,14 @@ public:
 	void NextCameraFunction();
 	void PreviousCameraFunction();
 
+	/* ///////////////////////////////////////////////////////
+	 *					   Public Properties
+	 * //////////////////////////////////////////////////////*/	
+
+	// Name that will appear in hud when looking through camera.
+	UPROPERTY(EditAnywhere)
+	FString CameraName;
+	
 protected:
 	virtual void BeginPlay() override;
 	
