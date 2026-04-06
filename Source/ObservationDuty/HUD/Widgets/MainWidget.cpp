@@ -7,6 +7,7 @@
 #include "Components/Button.h"
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
+#include "Components/WidgetSwitcher.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 #include "ObservationDuty/HUD/ODHUD.h"
 
@@ -14,11 +15,12 @@ void UMainWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	RA_ReportButton->SetIsEnabled(false);
-	RA_ReportButton->OnClicked.AddDynamic(this, &UMainWidget::OnReportButtonClicked);
-	NextCameraButton->OnClicked.AddDynamic(this, &UMainWidget::OnNextCameraClicked);
-	PreviousCameraButton->OnClicked.AddDynamic(this, &UMainWidget::OnPreviousCameraClicked);
-
-	// Load Animation
+	RA_ReportButton->OnPressed.AddDynamic(this, &UMainWidget::OnReportButtonClicked);
+	NextCameraButton->OnPressed.AddDynamic(this, &UMainWidget::OnNextCameraClicked);
+	PreviousCameraButton->OnPressed.AddDynamic(this, &UMainWidget::OnPreviousCameraClicked);
+	B_Play->OnPressed.AddDynamic(this, &UMainWidget::OnPlayClicked);
+	
+	// Starting Animation
 	PlayAnimation(LoadAnimation);
 }
 
@@ -111,6 +113,26 @@ void UMainWidget::UnselectAnomalySelection(APawn* OldPawn, APawn* NewPawn)
 	}
 }
 
+void UMainWidget::ChangeToPaused(bool bPaused)
+{
+	if (bPaused)
+	{
+		if (bAllowUISwitch)
+		{
+			PlayAnimation(PauseAnim);
+			UISwitcher->SetActiveWidgetIndex(1);
+		}
+	}
+	else
+	{
+		if (bAllowUISwitch)
+		{
+			PlayAnimation(PauseAnim);
+			UISwitcher->SetActiveWidgetIndex(0);
+		}
+	}
+}
+
 void UMainWidget::OnNextCameraClicked()
 {
 	HUD->NextCamera();
@@ -119,4 +141,9 @@ void UMainWidget::OnNextCameraClicked()
 void UMainWidget::OnPreviousCameraClicked()
 {
 	HUD->PreviousCamera();
+}
+
+void UMainWidget::OnPlayClicked()
+{
+	HUD->ResumeGame();
 }

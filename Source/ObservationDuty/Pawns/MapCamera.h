@@ -31,6 +31,8 @@ class OBSERVATIONDUTY_API AMapCamera : public APawn
 	UInputAction* NextCamera;	
 	UPROPERTY(EditAnywhere)
 	UInputAction* BackCamera;	
+	UPROPERTY(EditAnywhere)
+	UInputAction* Pause;	
 	
 public:
 	AMapCamera();
@@ -42,6 +44,7 @@ public:
 
 	void NextCameraFunction();
 	void PreviousCameraFunction();
+	void PauseFunction();
 
 	/* ///////////////////////////////////////////////////////
 	 *					   Public Properties
@@ -62,5 +65,6 @@ private:
 
 	UPROPERTY()
 	AODMainGameState* GameState;
+	bool bCanPause = false;
 	
 };

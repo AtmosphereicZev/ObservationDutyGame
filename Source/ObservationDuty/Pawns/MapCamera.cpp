@@ -6,7 +6,10 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
+#include "ObservationDuty/Controllers/ODPlayerController.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
+#include "ObservationDuty/HUD/ODHUD.h"
 
 
 AMapCamera::AMapCamera()
@@ -23,6 +26,16 @@ void AMapCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Letting starting sequence play before giving the ability to pause.
+	FTimerDelegate PauseDelegate;
+	FTimerHandle PauseHandle;
+	PauseDelegate.BindLambda([](bool* bCanPause)
+	{
+		*bCanPause = true;
+	}, &bCanPause);
+	GetWorldTimerManager().SetTimer(PauseHandle, PauseDelegate, 12.f, false);
+	
+	
 	// Get Game State
 	if (AODMainGameState* ODGameState = Cast<AODMainGameState>(GetWorld()->GetGameState()))
 	{
@@ -47,6 +60,7 @@ void AMapCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	{
 		EnhancedInputComponent->BindAction(NextCamera, ETriggerEvent::Started, this, &AMapCamera::NextCameraFunction);		
 		EnhancedInputComponent->BindAction(BackCamera, ETriggerEvent::Started, this, &AMapCamera::PreviousCameraFunction);		
+		EnhancedInputComponent->BindAction(Pause, ETriggerEvent::Started, this, &AMapCamera::PauseFunction);		
 	}
 	else
 	{
@@ -64,4 +78,27 @@ void AMapCamera::PreviousCameraFunction()
 {
 	AMapCamera* PreviousCameraActor = GameState->GetPreviousCamera(this);
 	GetController()->Possess(PreviousCameraActor);
+}
+
+void AMapCamera::PauseFunction()
+{
+	if (bCanPause)
+	{
+		if (!UGameplayStatics::IsGamePaused(GetWorld()))
+		{
+			if (AODPlayerController* PC = GetController<AODPlayerController>())
+			{
+				PC->OnGamePaused.Broadcast(true);
+			}
+			UGameplayStatics::SetGamePaused(GetWorld(), true);
+		}
+		else
+		{
+			if (AODPlayerController* PC = GetController<AODPlayerController>())
+			{
+				PC->OnGamePaused.Broadcast(false);
+			}
+			UGameplayStatics::SetGamePaused(GetWorld(), false);
+		}
+	}
 }

@@ -9,7 +9,7 @@
 void UAnomalySelectionBox::NativeConstruct()
 {
 	Super::NativeConstruct();
-	Button->OnClicked.AddDynamic(this, &UAnomalySelectionBox::OnButtonClicked);
+	Button->OnPressed.AddDynamic(this, &UAnomalySelectionBox::OnButtonClicked);
 }
 
 void UAnomalySelectionBox::SetupSelectionBox(const FString AnomalyName, EAnomalyType SelectionType)

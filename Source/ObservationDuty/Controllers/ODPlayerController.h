@@ -6,6 +6,9 @@
 #include "GameFramework/PlayerController.h"
 #include "ODPlayerController.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGamePaused, bool, bPaused);
+
+
 /**
  * 
  */
@@ -14,6 +17,16 @@ class OBSERVATIONDUTY_API AODPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
+public:
+	
+	/* ///////////////////////////////////////////////////////
+	 *							Events
+	 * //////////////////////////////////////////////////////*/	
+
+	UPROPERTY()
+	FOnGamePaused OnGamePaused;
+
+	
 protected:
 	virtual void BeginPlay() override;
 

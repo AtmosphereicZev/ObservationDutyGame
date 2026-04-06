@@ -30,6 +30,7 @@ void AODHUD::BeginPlay()
 		ActiveMainWidget->SetupWidget();
 		if (AODPlayerController* Controller = Cast<AODPlayerController>(GetOwningPlayerController()))
 		{
+			Controller->OnGamePaused.AddDynamic(ActiveMainWidget, &UMainWidget::ChangeToPaused);
 			if (AMapCamera* StartingCamera = Controller->GetPawn<AMapCamera>())
 			{
 				ActiveMainWidget->SetCameraText(StartingCamera->CameraName);
@@ -75,5 +76,13 @@ void AODHUD::PreviousCamera()
 	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
 	{
 		Camera->PreviousCameraFunction();
+	}
+}
+
+void AODHUD::ResumeGame()
+{
+	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
+	{
+		Camera->PauseFunction();
 	}
 }

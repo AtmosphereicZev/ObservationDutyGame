@@ -31,6 +31,8 @@ public:
 	void NextCamera();
 	UFUNCTION()
 	void PreviousCamera();
+	UFUNCTION()
+	void ResumeGame();
 	
 protected:
 	virtual void BeginPlay() override;

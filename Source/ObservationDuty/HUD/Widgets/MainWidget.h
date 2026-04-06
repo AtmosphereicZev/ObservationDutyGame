@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainWidget.generated.h"
 
+class UWidgetSwitcher;
 class AODHUD;
 enum EAnomalyType : int;
 class UAnomalySelectionBox;
@@ -42,6 +43,11 @@ public:
 	UTextBlock* PC_TXT;
 	UPROPERTY(meta=(BindWidget))
 	UTextBlock* CameraName;
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+	UWidgetSwitcher* UISwitcher;
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+	UButton* B_Play;
+
 	
 	// Report Anomalies Box
 	UPROPERTY(meta=(BindWidget))
@@ -71,8 +77,10 @@ public:
 	 *						  Animations
 	 * //////////////////////////////////////////////////////*/	
 
-	UPROPERTY(Transient, meta=(BindWidgetAnim))
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
 	UWidgetAnimation* LoadAnimation;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* PauseAnim;
 	
 	/* ///////////////////////////////////////////////////////
 	 *						  Properties
@@ -82,7 +90,9 @@ public:
 	TSubclassOf<UUserWidget> AnomalySelectionBoxClass;
 	UPROPERTY()
 	AODHUD* HUD;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bAllowUISwitch = true;
+	
 	/* ///////////////////////////////////////////////////////
 	 *						  Functions
 	 * //////////////////////////////////////////////////////*/	
@@ -101,6 +111,8 @@ public:
 	void ReportAnomaly(EAnomalyType AnomalyType);
 	UFUNCTION()
 	void UnselectAnomalySelection(APawn* OldPawn, APawn* NewPawn);
+	UFUNCTION()
+	void ChangeToPaused(bool bPaused);
 	
 protected:
 
@@ -108,6 +120,9 @@ protected:
 	void OnNextCameraClicked();
 	UFUNCTION()
 	void OnPreviousCameraClicked();
+	UFUNCTION()
+	void OnPlayClicked();
+
 	
 private:
 
