@@ -17,6 +17,9 @@ void UMainWidget::NativeConstruct()
 	RA_ReportButton->OnClicked.AddDynamic(this, &UMainWidget::OnReportButtonClicked);
 	NextCameraButton->OnClicked.AddDynamic(this, &UMainWidget::OnNextCameraClicked);
 	PreviousCameraButton->OnClicked.AddDynamic(this, &UMainWidget::OnPreviousCameraClicked);
+
+	// Load Animation
+	PlayAnimation(LoadAnimation);
 }
 
 void UMainWidget::SetupWidget()
