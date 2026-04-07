@@ -8,8 +8,11 @@
 #include "Components/ScrollBox.h"
 #include "Components/TextBlock.h"
 #include "Components/WidgetSwitcher.h"
+#include "GameFramework/GameSession.h"
+#include "Kismet/GameplayStatics.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 #include "ObservationDuty/HUD/ODHUD.h"
+#include "ObservationDuty/Pawns/MapCamera.h"
 
 void UMainWidget::NativeConstruct()
 {
@@ -19,6 +22,7 @@ void UMainWidget::NativeConstruct()
 	NextCameraButton->OnPressed.AddDynamic(this, &UMainWidget::OnNextCameraClicked);
 	PreviousCameraButton->OnPressed.AddDynamic(this, &UMainWidget::OnPreviousCameraClicked);
 	B_Play->OnPressed.AddDynamic(this, &UMainWidget::OnPlayClicked);
+	B_Menu->OnPressed.AddDynamic(this, &UMainWidget::OnMenuClicked);
 	
 	// Starting Animation
 	PlayAnimation(LoadAnimation);
@@ -103,7 +107,7 @@ void UMainWidget::ReportAnomaly(EAnomalyType AnomalyType)
 	}
 }
 
-void UMainWidget::UnselectAnomalySelection(APawn* OldPawn, APawn* NewPawn)
+void UMainWidget::OnCameraChanged(APawn* OldPawn, APawn* NewPawn)
 {
 	if (CurrentlySelectedBox)
 	{
@@ -111,6 +115,9 @@ void UMainWidget::UnselectAnomalySelection(APawn* OldPawn, APawn* NewPawn)
 		CurrentlySelectedBox->UnhighlightBox();
 		CurrentlySelectedBox = nullptr;
 	}
+
+	PlayAnimation(SwitchAnimation);
+	PlaySound(CameraChangeSound);
 }
 
 void UMainWidget::ChangeToPaused(bool bPaused)
@@ -120,6 +127,7 @@ void UMainWidget::ChangeToPaused(bool bPaused)
 		if (bAllowUISwitch)
 		{
 			PlayAnimation(PauseAnim);
+			PlaySound(CameraChangeSound);
 			UISwitcher->SetActiveWidgetIndex(1);
 		}
 	}
@@ -128,6 +136,7 @@ void UMainWidget::ChangeToPaused(bool bPaused)
 		if (bAllowUISwitch)
 		{
 			PlayAnimation(PauseAnim);
+			PlaySound(CameraChangeSound);
 			UISwitcher->SetActiveWidgetIndex(0);
 		}
 	}
@@ -146,4 +155,9 @@ void UMainWidget::OnPreviousCameraClicked()
 void UMainWidget::OnPlayClicked()
 {
 	HUD->ResumeGame();
+}
+
+void UMainWidget::OnMenuClicked()
+{
+	HUD->ReturnToMenu();
 }

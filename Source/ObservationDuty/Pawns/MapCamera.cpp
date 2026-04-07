@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "AssetTypeActions/AssetDefinition_SoundBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "ObservationDuty/Controllers/ODPlayerController.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
@@ -70,18 +71,21 @@ void AMapCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 void AMapCamera::NextCameraFunction()
 {
+	if (bPreventInputs){return;}
 	AMapCamera* NextCameraActor = GameState->GetNextCamera(this);
 	GetController()->Possess(NextCameraActor);
 }
 
 void AMapCamera::PreviousCameraFunction()
 {
+	if (bPreventInputs){return;}
 	AMapCamera* PreviousCameraActor = GameState->GetPreviousCamera(this);
 	GetController()->Possess(PreviousCameraActor);
 }
 
 void AMapCamera::PauseFunction()
 {
+	if (bPreventInputs){return;}
 	if (bCanPause)
 	{
 		if (!UGameplayStatics::IsGamePaused(GetWorld()))

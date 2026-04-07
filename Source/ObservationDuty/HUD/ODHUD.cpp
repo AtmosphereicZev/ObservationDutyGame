@@ -3,6 +3,8 @@
 
 #include "ODHUD.h"
 
+#include "Components/WidgetSwitcher.h"
+#include "Kismet/GameplayStatics.h"
 #include "ObservationDuty/Controllers/ODPlayerController.h"
 #include "ObservationDuty/Gamemodes/Gamestates/ODMainGameState.h"
 #include "ObservationDuty/Pawns/MapCamera.h"
@@ -41,7 +43,7 @@ void AODHUD::BeginPlay()
 			}
 		}
 		ActiveMainWidget->AddToViewport();
-		GetOwningPlayerController()->OnPossessedPawnChanged.AddDynamic(ActiveMainWidget, &UMainWidget::UnselectAnomalySelection);
+		GetOwningPlayerController()->OnPossessedPawnChanged.AddDynamic(ActiveMainWidget, &UMainWidget::OnCameraChanged);
 	}
 	else
 	{
@@ -85,4 +87,16 @@ void AODHUD::ResumeGame()
 	{
 		Camera->PauseFunction();
 	}
+}
+
+void AODHUD::ReturnToMenu()
+{
+	ActiveMainWidget->UISwitcher->SetActiveWidgetIndex(0);
+	ActiveMainWidget->bAllowUISwitch = false;
+	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
+	{
+		Camera->SetPreventInput(true);
+	}
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+	ActiveMainWidget->PlayAnimation(ActiveMainWidget->ReturnAnimation);
 }

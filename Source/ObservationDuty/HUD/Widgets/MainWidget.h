@@ -47,6 +47,8 @@ public:
 	UWidgetSwitcher* UISwitcher;
 	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
 	UButton* B_Play;
+	UPROPERTY(meta=(BindWidget), BlueprintReadWrite)
+	UButton* B_Menu;
 
 	
 	// Report Anomalies Box
@@ -81,6 +83,10 @@ public:
 	UWidgetAnimation* LoadAnimation;
 	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
 	UWidgetAnimation* PauseAnim;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* SwitchAnimation;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* ReturnAnimation;
 	
 	/* ///////////////////////////////////////////////////////
 	 *						  Properties
@@ -110,7 +116,7 @@ public:
 	UFUNCTION()
 	void ReportAnomaly(EAnomalyType AnomalyType);
 	UFUNCTION()
-	void UnselectAnomalySelection(APawn* OldPawn, APawn* NewPawn);
+	void OnCameraChanged(APawn* OldPawn, APawn* NewPawn);
 	UFUNCTION()
 	void ChangeToPaused(bool bPaused);
 	
@@ -122,7 +128,12 @@ protected:
 	void OnPreviousCameraClicked();
 	UFUNCTION()
 	void OnPlayClicked();
+	UFUNCTION()
+	void OnMenuClicked();
 
+	// Sounds
+	UPROPERTY(EditAnywhere)
+	USoundBase* CameraChangeSound;
 	
 private:
 

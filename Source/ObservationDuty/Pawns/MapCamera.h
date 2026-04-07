@@ -47,6 +47,13 @@ public:
 	void PauseFunction();
 
 	/* ///////////////////////////////////////////////////////
+	 *					   Getters/Setters
+	 * //////////////////////////////////////////////////////*/	
+
+	bool GetPreventInput() const {return bPreventInputs;}
+	void SetPreventInput(bool Value){bPreventInputs = Value;}
+
+	/* ///////////////////////////////////////////////////////
 	 *					   Public Properties
 	 * //////////////////////////////////////////////////////*/	
 
@@ -66,5 +73,6 @@ private:
 	UPROPERTY()
 	AODMainGameState* GameState;
 	bool bCanPause = false;
+	bool bPreventInputs = false;
 	
 };
