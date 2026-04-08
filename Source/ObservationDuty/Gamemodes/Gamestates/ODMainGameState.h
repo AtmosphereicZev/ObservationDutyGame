@@ -16,6 +16,10 @@ class AMapCamera;
  */
 
 DECLARE_DELEGATE_ThreeParams(FAnomalyDelegate, UAnomalyComponent*, TArray<AActor*>, bool);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSuccessfullyReportedAnomaly);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameWon);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGameLost);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnAnomalyOverload);
 
 UCLASS()
 class OBSERVATIONDUTY_API AODMainGameState : public AGameStateBase
@@ -62,6 +66,11 @@ public:
 	 */
 	UFUNCTION()
 	void ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camera);
+	/**
+	 * Fades out all ambience in the current map.
+	 */
+	UFUNCTION(BlueprintCallable)
+	void StopMapAmbience();
 
 	/* ///////////////////////////////////////////////////////
 	 *					  Getters/Setters
@@ -76,6 +85,19 @@ public:
 
 	UPROPERTY()
 	AMapCamera* CurrentlyControlledCamera;
+
+	/* ///////////////////////////////////////////////////////
+	 *						   Events
+	 * //////////////////////////////////////////////////////*/
+
+	UPROPERTY()
+	FOnSuccessfullyReportedAnomaly OnSuccessfullyReportedAnomaly;
+	UPROPERTY()
+	FOnGameWon OnGameWon;
+	UPROPERTY()
+	FOnGameLost OnGameLost;
+	UPROPERTY()
+	FOnAnomalyOverload OnAnomalyOverload;
 	
 protected:
 

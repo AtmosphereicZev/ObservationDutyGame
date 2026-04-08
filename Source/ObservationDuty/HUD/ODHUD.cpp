@@ -53,16 +53,27 @@ void AODHUD::BeginPlay()
 	if (AODMainGameState* GameStateRef = Cast<AODMainGameState>(GetWorld()->GetGameState()))
 	{
 		GameState = GameStateRef;
+		GameState->OnSuccessfullyReportedAnomaly.AddDynamic(ActiveMainWidget, &UMainWidget::PlayAnomalyReportedAnimation);
+		GameState->OnAnomalyOverload.AddDynamic(ActiveMainWidget, &UMainWidget::PlayAnomalyOverflowAnimation);
+		GameState->OnGameWon.AddDynamic(this, &AODHUD::TriggerGameWon);
+		GameState->OnGameLost.AddDynamic(this, &AODHUD::TriggerGameLost);
 	}
 
 }
 
-void AODHUD::ReportAnomaly(EAnomalyType AnomalyType)
+AMapCamera* AODHUD::GetCurrentCamera()
 {
 	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
 	{
-		GameState->ReportAnomaly(AnomalyType, Camera);
+		return Camera;
 	}
+	return nullptr;
+}
+
+void AODHUD::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camera)
+{
+	if (!Camera){UE_LOG(LogTemp, Warning, TEXT("Camera is not valid, report not continuing."));return;}
+	GameState->ReportAnomaly(AnomalyType, Camera);
 }
 
 void AODHUD::NextCamera()
@@ -99,4 +110,22 @@ void AODHUD::ReturnToMenu()
 	}
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 	ActiveMainWidget->PlayAnimation(ActiveMainWidget->ReturnAnimation);
+}
+
+void AODHUD::TriggerGameWon()
+{
+	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
+	{
+		Camera->SetPreventInput(true);
+	}
+	ActiveMainWidget->PlayAnimation(ActiveMainWidget->GameWon);	
+}
+
+void AODHUD::TriggerGameLost()
+{
+	if (AMapCamera* Camera = Cast<AMapCamera>(GetOwningPlayerController()->GetPawn()))
+	{
+		Camera->SetPreventInput(true);
+	}
+	ActiveMainWidget->PlayAnimation(ActiveMainWidget->GameLost);	
 }

@@ -7,6 +7,7 @@
 #include "Widgets/MainWidget.h"
 #include "ODHUD.generated.h"
 
+class AMapCamera;
 class AODMainGameState;
 /**
  * 
@@ -26,7 +27,9 @@ public:
 	UFUNCTION()
 	UMainWidget* GetMainWidget() const {return ActiveMainWidget;}
 	UFUNCTION()
-	void ReportAnomaly(EAnomalyType AnomalyType);
+	AMapCamera* GetCurrentCamera();
+	UFUNCTION()
+	void ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camera);
 	UFUNCTION()
 	void NextCamera();
 	UFUNCTION()
@@ -35,6 +38,10 @@ public:
 	void ResumeGame();
 	UFUNCTION()
 	void ReturnToMenu();
+	UFUNCTION()
+	void TriggerGameWon();
+	UFUNCTION()
+	void TriggerGameLost();
 	
 protected:
 	virtual void BeginPlay() override;

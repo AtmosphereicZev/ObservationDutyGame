@@ -27,14 +27,14 @@ void AMapCamera::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Letting starting sequence play before giving the ability to pause.
-	FTimerDelegate PauseDelegate;
-	FTimerHandle PauseHandle;
-	PauseDelegate.BindLambda([](bool* bCanPause)
+	// Letting starting sequence play before giving inputs.
+	FTimerDelegate InputBlockDelegate;
+	FTimerHandle InputBlockHandle;
+	InputBlockDelegate.BindLambda([](bool* bPreventInputs)
 	{
-		*bCanPause = true;
-	}, &bCanPause);
-	GetWorldTimerManager().SetTimer(PauseHandle, PauseDelegate, 12.f, false);
+		*bPreventInputs = false;
+	}, &bPreventInputs);
+	GetWorldTimerManager().SetTimer(InputBlockHandle, InputBlockDelegate, 8.0f, false);
 	
 	
 	// Get Game State

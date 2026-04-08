@@ -88,16 +88,17 @@ void UMainWidget::OnReportButtonClicked()
 	CurrentlySelectedBox->UnhighlightBox();
 	FTimerHandle TimerHandle;
 	FTimerDelegate TimerDelegate;
-	TimerDelegate.BindUFunction(this, "ReportAnomaly", CurrentlySelectedBox->GetSelectionType());
+	TimerDelegate.BindUFunction(this, "ReportAnomaly", CurrentlySelectedBox->GetSelectionType(), HUD->GetCurrentCamera());
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, 10.0f, false);
 	CurrentlySelectedBox = nullptr;
 }
 
-void UMainWidget::ReportAnomaly(EAnomalyType AnomalyType)
+void UMainWidget::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camera)
 {
-	HUD->ReportAnomaly(AnomalyType);
+	HUD->ReportAnomaly(AnomalyType, Camera);
 	RA_ReportButton->SetIsEnabled(false);
 	TArray<UWidget*> SelectionBoxes = RA_SB->GetAllChildren();
+	PlaySound(ReportCompleteSound);
 	for (UWidget* SelectionBox : SelectionBoxes)
 	{
 		if (UAnomalySelectionBox* Box = Cast<UAnomalySelectionBox>(SelectionBox))
@@ -140,6 +141,16 @@ void UMainWidget::ChangeToPaused(bool bPaused)
 			UISwitcher->SetActiveWidgetIndex(0);
 		}
 	}
+}
+
+void UMainWidget::PlayAnomalyReportedAnimation()
+{
+	PlayAnimation(AnomalyReportedAnimation);
+}
+
+void UMainWidget::PlayAnomalyOverflowAnimation()
+{
+	PlayAnimation(AnomalyOverflowAnimation);
 }
 
 void UMainWidget::OnNextCameraClicked()

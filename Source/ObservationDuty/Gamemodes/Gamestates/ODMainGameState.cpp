@@ -7,6 +7,7 @@
 #include "ObservationDuty/Components/AnomalyComponent/AnomalyComponent.h"
 #include "ObservationDuty/Pawns/MapCamera.h"
 #include "ObservationDuty/Structs/AnomalyStruct.h"
+#include "Sound/AmbientSound.h"
 
 AODMainGameState::AODMainGameState()
 {
@@ -34,18 +35,35 @@ void AODMainGameState::BeginPlay()
 		}
 	}
 
-	// 13-Minute Game Timer.
+	// 11-Minute Game Timer.
 	FTimerDelegate GameTimerDelegate;
 	GameTimerDelegate.BindUFunction(this, "GameEnd");
-	// 780 = 13 minutes.
-	GetWorldTimerManager().SetTimer(GameTimer, GameTimerDelegate, 780.0f, false);
+	// 660 = 11 minutes.
+	GetWorldTimerManager().SetTimer(GameTimer, GameTimerDelegate, 660.0f, false);
 
-	// Prep Phase - giving the player 3 minutes to memorize the map before anomalies start
+	// Prep Phase - giving the player minute to memorize the map before anomalies start
 	// spawning every minute.
 	FTimerHandle PrepPhaseHandle;
 	FTimerDelegate PrepPhaseDelegate;
 	PrepPhaseDelegate.BindUFunction(this, "EndPrepPhase");
-	GetWorldTimerManager().SetTimer(PrepPhaseHandle, PrepPhaseDelegate, 180.0f, false);
+	GetWorldTimerManager().SetTimer(PrepPhaseHandle, PrepPhaseDelegate, 60.0f, false);
+
+	// Enable Map Ambience
+	FTimerDelegate AmbienceDelegate;
+	FTimerHandle AmbienceHandle;
+	AmbienceDelegate.BindLambda([this]()
+	{
+		TArray<AActor*> FoundSounds;
+		UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAmbientSound::StaticClass(), FoundSounds);
+		for (AActor* Sound : FoundSounds)
+		{
+			if (AAmbientSound* CastedSound = Cast<AAmbientSound>(Sound))
+			{
+				CastedSound->FadeIn(10,1);
+			}
+		}
+	});
+	GetWorldTimerManager().SetTimer(AmbienceHandle, AmbienceDelegate, 10.0f, false);
 }
 
 AMapCamera* AODMainGameState::GetNextCamera(AMapCamera* CurrentCamera)
@@ -106,7 +124,6 @@ void AODMainGameState::SpawnAnomaly()
 		{
 			int32 randNum = FMath::RandRange(0, ValidAnomalies.Num() - 1);
 			bool bound = ValidAnomalies[randNum].AnomalyEvent.ExecuteIfBound(ValidAnomalies[randNum].AssociatedActor, ValidAnomalies[randNum].AssociatedActors, true);
-			UE_LOG(LogTemp, Warning, TEXT("Spawning Anomaly"));
 			if (!bound)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("EVENT NOT BOUND!"));
@@ -142,6 +159,7 @@ void AODMainGameState::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camer
 	{
 		if (AnomalyType == ActiveAnomalies[i].AnomalyType && Camera == ActiveAnomalies[i].AssociatedCamera)
 		{
+			OnSuccessfullyReportedAnomaly.Broadcast();
 			bool bound = ActiveAnomalies[i].AnomalyEvent.ExecuteIfBound(ActiveAnomalies[i].AssociatedActor, ActiveAnomalies[i].AssociatedActors, false);
 			if (!bound)
 			{
@@ -151,21 +169,45 @@ void AODMainGameState::ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camer
 			{
 				AvailableAnomalies.Add(ActiveAnomalies[i]);
 				ActiveAnomalies.RemoveAt(i);
+				return;
 			}
+		}
+	}
+}
+
+void AODMainGameState::StopMapAmbience()
+{
+	TArray<AActor*> FoundSounds;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAmbientSound::StaticClass(), FoundSounds);
+	for (AActor* Sound : FoundSounds)
+	{
+		if (AAmbientSound* CastedSound = Cast<AAmbientSound>(Sound))
+		{
+			CastedSound->FadeOut(3, 1);
 		}
 	}
 }
 
 void AODMainGameState::GameEnd()
 {
-	// Implement Ending Code.
-	UE_LOG(LogTemp, Warning, TEXT("Game End"))
+	GetWorldTimerManager().ClearTimer(AnomalyTimer);
+	OnGameWon.Broadcast();
 }
 
 void AODMainGameState::GameLost()
 {
-	// Implement Losing Code.
-	UE_LOG(LogTemp, Warning, TEXT("Game Lost"))
+	GetWorldTimerManager().ClearTimer(AnomalyTimer);
+	GetWorldTimerManager().ClearTimer(GameTimer);
+	TArray<AActor*> FoundSounds;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AAmbientSound::StaticClass(), FoundSounds);
+	for (AActor* Sound : FoundSounds)
+	{
+		if (AAmbientSound* CastedSound = Cast<AAmbientSound>(Sound))
+		{
+			CastedSound->Stop();
+		}
+	}
+	OnGameLost.Broadcast();
 }
 
 void AODMainGameState::EndPrepPhase()
@@ -180,9 +222,16 @@ void AODMainGameState::EndPrepPhase()
 
 void AODMainGameState::CheckAnomalyCount()
 {
-	if (ActiveAnomalies.Num() >= 5)
+	if (ActiveAnomalies.Num() >= 4)
 	{
-		GameLost();
+		if (ActiveAnomalies.Num() >= 5)
+		{
+			GameLost();
+		}
+		else
+		{
+			OnAnomalyOverload.Broadcast();
+		}
 	}
 }
 

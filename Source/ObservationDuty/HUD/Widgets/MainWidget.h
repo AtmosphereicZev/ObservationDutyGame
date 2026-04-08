@@ -87,6 +87,14 @@ public:
 	UWidgetAnimation* SwitchAnimation;
 	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
 	UWidgetAnimation* ReturnAnimation;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* AnomalyReportedAnimation;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* AnomalyOverflowAnimation;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* GameWon;
+	UPROPERTY(Transient, meta=(BindWidgetAnim), BlueprintReadWrite)
+	UWidgetAnimation* GameLost;
 	
 	/* ///////////////////////////////////////////////////////
 	 *						  Properties
@@ -114,11 +122,15 @@ public:
 	UFUNCTION()
 	void OnReportButtonClicked();
 	UFUNCTION()
-	void ReportAnomaly(EAnomalyType AnomalyType);
+	void ReportAnomaly(EAnomalyType AnomalyType, AMapCamera* Camera);
 	UFUNCTION()
 	void OnCameraChanged(APawn* OldPawn, APawn* NewPawn);
 	UFUNCTION()
 	void ChangeToPaused(bool bPaused);
+	UFUNCTION()
+	void PlayAnomalyReportedAnimation();
+	UFUNCTION()
+	void PlayAnomalyOverflowAnimation();
 	
 protected:
 
@@ -134,6 +146,8 @@ protected:
 	// Sounds
 	UPROPERTY(EditAnywhere)
 	USoundBase* CameraChangeSound;
+	UPROPERTY(EditAnywhere)
+	USoundBase* ReportCompleteSound;
 	
 private:
 

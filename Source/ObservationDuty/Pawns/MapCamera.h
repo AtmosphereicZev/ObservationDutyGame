@@ -73,6 +73,7 @@ private:
 	UPROPERTY()
 	AODMainGameState* GameState;
 	bool bCanPause = false;
-	bool bPreventInputs = false;
+	// This is automatically true until changed on begin play.
+	bool bPreventInputs = true;
 	
 };
