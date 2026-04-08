@@ -29,6 +29,15 @@ public:
 	static void MoveObject(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
 	UFUNCTION()
 	static void Vanish(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void Appear(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void Malfunction(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void TurnOnTV(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void RotateRegisterShelf(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+
 	
 	
 protected:

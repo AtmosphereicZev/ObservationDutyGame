@@ -145,7 +145,11 @@ private:
 	/* Associated Functions for each anomaly by name. */
 	TMap<FString, FAnomalyDelegate> AnomalyFunctions = {
 		{"Move", FAnomalyDelegate::CreateStatic(&UAnomalies::MoveObject)},
-		{"Vanish", FAnomalyDelegate::CreateStatic(&UAnomalies::Vanish)}
+		{"Vanish", FAnomalyDelegate::CreateStatic(&UAnomalies::Vanish)},
+		{"Appear", FAnomalyDelegate::CreateStatic(&UAnomalies::Appear)},
+		{"Malfunction", FAnomalyDelegate::CreateStatic(&UAnomalies::Malfunction)},
+		{"TurnOnTV", FAnomalyDelegate::CreateStatic(&UAnomalies::TurnOnTV)},
+		{"RotateRegisterShelf", FAnomalyDelegate::CreateStatic(&UAnomalies::RotateRegisterShelf)}
 	};
 
 	/* Full String Names of each anomaly. (Mainly used for the HUD) */

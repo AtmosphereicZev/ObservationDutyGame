@@ -123,6 +123,7 @@ void AODMainGameState::SpawnAnomaly()
 		if (ValidAnomalies.Num() > 1)
 		{
 			int32 randNum = FMath::RandRange(0, ValidAnomalies.Num() - 1);
+			// UE_LOG(LogTemp, Warning, TEXT("Spawning Anomaly: %s in %s"), *ValidAnomalies[randNum].AnomalyName, *ValidAnomalies[randNum].AssociatedCamera->CameraName);
 			bool bound = ValidAnomalies[randNum].AnomalyEvent.ExecuteIfBound(ValidAnomalies[randNum].AssociatedActor, ValidAnomalies[randNum].AssociatedActors, true);
 			if (!bound)
 			{
@@ -191,6 +192,7 @@ void AODMainGameState::StopMapAmbience()
 void AODMainGameState::GameEnd()
 {
 	GetWorldTimerManager().ClearTimer(AnomalyTimer);
+	StopMapAmbience();
 	OnGameWon.Broadcast();
 }
 

@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "MainWidget.generated.h"
 
+class AMapCamera;
 class UWidgetSwitcher;
 class AODHUD;
 enum EAnomalyType : int;
