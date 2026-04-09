@@ -30,6 +30,8 @@ public:
 	UFUNCTION()
 	static void Vanish(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
 	UFUNCTION()
+	static void VanishSprite(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
 	static void Appear(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
 	UFUNCTION()
 	static void Malfunction(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
@@ -37,6 +39,8 @@ public:
 	static void TurnOnTV(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
 	UFUNCTION()
 	static void RotateRegisterShelf(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
+	UFUNCTION()
+	static void Shadow(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState);
 
 	
 	

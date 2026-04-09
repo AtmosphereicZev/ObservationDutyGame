@@ -146,7 +146,9 @@ private:
 	TMap<FString, FAnomalyDelegate> AnomalyFunctions = {
 		{"Move", FAnomalyDelegate::CreateStatic(&UAnomalies::MoveObject)},
 		{"Vanish", FAnomalyDelegate::CreateStatic(&UAnomalies::Vanish)},
+		{"VanishSprite", FAnomalyDelegate::CreateStatic(&UAnomalies::VanishSprite)},
 		{"Appear", FAnomalyDelegate::CreateStatic(&UAnomalies::Appear)},
+		{"Shadow", FAnomalyDelegate::CreateStatic(&UAnomalies::Shadow)},
 		{"Malfunction", FAnomalyDelegate::CreateStatic(&UAnomalies::Malfunction)},
 		{"TurnOnTV", FAnomalyDelegate::CreateStatic(&UAnomalies::TurnOnTV)},
 		{"RotateRegisterShelf", FAnomalyDelegate::CreateStatic(&UAnomalies::RotateRegisterShelf)}

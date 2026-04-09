@@ -3,7 +3,9 @@
 
 #include "Anomalies.h"
 
+#include "Components/DecalComponent.h"
 #include "Components/PostProcessComponent.h"
+#include "Engine/DecalActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "ObservationDuty/Components/AnomalyComponent/AnomalyComponent.h"
 
@@ -56,6 +58,24 @@ void UAnomalies::Vanish(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActo
 					Mesh->SetVisibility(true);
 				}
 			}
+		}
+	}
+}
+
+void UAnomalies::VanishSprite(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState)
+{
+	if (bState)
+	{
+		if (ADecalActor* Shadow = Cast<ADecalActor>(Actor->GetOwner()))
+		{
+			Shadow->GetDecal()->SetVisibility(false);
+		}
+	}
+	else
+	{
+		if (ADecalActor* Shadow = Cast<ADecalActor>(Actor->GetOwner()))
+		{
+			Shadow->GetDecal()->SetVisibility(true);
 		}
 	}
 }
@@ -135,5 +155,23 @@ void UAnomalies::RotateRegisterShelf(UAnomalyComponent* Actor, TArray<AActor*> A
 	for (AActor* AssociatedActor : AssociatedActors)
 	{
 		AssociatedActor->SetActorRotation(Actor->GetOwner()->GetActorRotation() + FRotator(0, 180, 0));
+	}
+}
+
+void UAnomalies::Shadow(UAnomalyComponent* Actor, TArray<AActor*> AssociatedActors, bool bState)
+{
+	if (bState)
+	{
+		if (ADecalActor* Shadow = Cast<ADecalActor>(Actor->GetOwner()))
+		{
+			Shadow->GetDecal()->SetVisibility(true);
+		}
+	}
+	else
+	{
+		if (ADecalActor* Shadow = Cast<ADecalActor>(Actor->GetOwner()))
+		{
+			Shadow->GetDecal()->SetVisibility(false);
+		}
 	}
 }
