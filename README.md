@@ -60,14 +60,14 @@ Adding anomalies to your map should be WAY easier then creating one, everything 
 
 Spawnable Anomalies on the `Anomaly` actor component is an array of FAnomaly(s), which is a struct that consist of the name, the type, the Camera the anomaly is associated with, and all actors the anomaly is associated with (which can sound confusing at first but will be explained), and the Anomaly Event which is what gets broadcasted when the anomaly actually gets triggered, but that isn't visible to the editor.
 
-**Anomaly Name** - The name of the Anomaly you want spawning on the actor. The list of available anomalies can be found [[Observation Duty by Zev#^978eae||below]]
+**Anomaly Name** - The name of the Anomaly you want spawning on the actor. The list of available anomalies can be found below
 **Anomaly Type** - The type this anomaly is meant to be reported by in game.
 **Associated Camera** - The camera this anomaly is meant to be seen/observed by. Can be easily set by using the eyedropper tool in the editor.
-**Associated Actors** - Extra Functionality for certain anomalies, usage can be seen [[Observation Duty by Zev#^978eae||below]]
+**Associated Actors** - Extra Functionality for certain anomalies, usage can be seen below
 
 
 
-#### Available Anomalies ^978eae
+#### Available Anomalies
 
 | Anomaly Name | Anomaly Description                                                                                                                                                                  | Associated Actors Usage                  |
 | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
